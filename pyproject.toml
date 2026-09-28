@@ -1,0 +1,22 @@
+[project]
+name = "stock_entry_series"
+authors = [
+    { name = "Muhammad Yusuf Tri Daryanto", email = "114971841+Muhayustrid@users.noreply.github.com"}
+]
+description = "Automatically select Stock Entry naming series based on Stock Entry Type in ERPNext"
+requires-python = ">=3.10"
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    # "frappe~=16.0.0" # Installed and managed by bench.
+]
+
+[build-system]
+requires = ["flit_core >=3.4,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.bench.dev-dependencies]
+
+[tool.ruff]
+line-length = 110
+target-version = "py314"

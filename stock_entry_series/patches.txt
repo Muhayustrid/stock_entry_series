@@ -1,0 +1,1 @@
+stock_entry_series.patches.v1_0.seed_stock_entry_series
