@@ -1,4 +1,5 @@
 import frappe
+from frappe.model.naming import get_default_naming_series
 
 DEFAULT_SERIES = "MAT-STE-.YYYY.-"
 
@@ -15,7 +16,14 @@ def set_naming_series(doc, method=None):
 	type_series = frappe.db.get_value("Stock Entry Type", doc.stock_entry_type, "custom_naming_series")
 	target_series = type_series or DEFAULT_SERIES
 
-	# Only override when the series is empty or still the generic default;
-	# an explicitly chosen series is respected.
-	if not doc.naming_series or doc.naming_series == DEFAULT_SERIES:
+	field_meta = frappe.get_meta("Stock Entry").get_field("naming_series")
+	# The framework prefills naming_series with its own default at insert;
+	# treat all of those as "not chosen". An explicitly chosen series is respected.
+	replaceable = {
+		"",
+		(field_meta and field_meta.default) or "",
+		get_default_naming_series("Stock Entry") or "",
+		DEFAULT_SERIES,
+	}
+	if (doc.naming_series or "") in replaceable:
 		doc.naming_series = target_series

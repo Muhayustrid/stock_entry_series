@@ -5,6 +5,8 @@ app_description = "Automatically select Stock Entry naming series based on Stock
 app_email = "114971841+Muhayustrid@users.noreply.github.com"
 app_license = "mit"
 
+required_apps = ["erpnext"]
+
 doctype_js = {
 	"Stock Entry": "public/js/stock_entry_form.js",
 	"Material Request": "public/js/material_request_form.js"
