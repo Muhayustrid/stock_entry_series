@@ -1,17 +1,21 @@
 # Stock Entry Series
 
-Custom Frappe app for ERPNext to dynamically set Stock Entry `naming_series` based on the selected `Stock Entry Type`.
+Custom Frappe app for ERPNext with dynamic document naming series:
+
+- **Stock Entry** — series configured per **Stock Entry Type** (field *Naming Series* on each Stock Entry Type).
+- **Material Request** — series configured per **Material Request Type** via the `SERIES_MAP` in `stock_entry_series/overrides/material_request.py` (the type is a fixed Select field with no master doctype).
 
 ## Features
-- **Naming Series per Stock Entry Type**: Configure the series directly on each `Stock Entry Type` document (field **Naming Series**).
-- **No Hardcoded Client Scripts**: Adding a new Stock Entry Type + series needs zero code changes.
+- **No Hardcoded Client Scripts**: picking a type auto-fills the matching series on the form.
 - **Dual-Layer Guarantee**:
-  - **Desk UI**: Auto-fills `naming_series` the moment a Stock Entry Type is picked on the Stock Entry form.
-  - **Server-Side Hook**: Also applies to entries created via Data Import (Excel/CSV) or REST API.
-- **Fallback**: Falls back to ERPNext default `MAT-STE-.YYYY.-` when the type has no series configured.
+  - **Desk UI**: auto-fills `naming_series` the moment a type is picked.
+  - **Server-Side Hook**: also applies to documents created via Data Import (Excel/CSV) or REST API.
+- **Fallback**: Stock Entry falls back to `MAT-STE-.YYYY.-`, Material Request to `MAT-MR-.YYYY.-`.
+- **Explicit wins**: a manually chosen series is never overridden.
 
 ## Example
-`Material Transfer` with series `MTR-.YY.-.####` names entries like `MTR-26-00001`.
+- `Material Transfer` Stock Entry with series `MTR-.YY.-.####` names entries like `MTR-26-00001`.
+- `Purchase` Material Request with series `MREQ-PUR-.YY.-.####` names requests like `MREQ-PUR-26-00001`.
 
 ## License
 MIT

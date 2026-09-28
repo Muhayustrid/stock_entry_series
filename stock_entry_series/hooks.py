@@ -6,12 +6,16 @@ app_email = "114971841+Muhayustrid@users.noreply.github.com"
 app_license = "mit"
 
 doctype_js = {
-	"Stock Entry": "public/js/stock_entry_form.js"
+	"Stock Entry": "public/js/stock_entry_form.js",
+	"Material Request": "public/js/material_request_form.js"
 }
 
 doc_events = {
 	"Stock Entry": {
 		"before_insert": "stock_entry_series.overrides.stock_entry.set_naming_series"
+	},
+	"Material Request": {
+		"before_insert": "stock_entry_series.overrides.material_request.set_naming_series"
 	}
 }
 
