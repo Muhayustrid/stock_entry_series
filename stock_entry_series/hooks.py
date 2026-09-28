@@ -28,4 +28,8 @@ fixtures = [
 	}
 ]
 
-after_migrate = "stock_entry_series.patches.v1_0.seed_stock_entry_series.execute"
+before_migrate = "stock_entry_series.patches.v1_0.ensure_naming_series_map.ensure_module_def"
+after_migrate = [
+	"stock_entry_series.patches.v1_0.seed_stock_entry_series.execute",
+	"stock_entry_series.patches.v1_0.ensure_naming_series_map.execute",
+]

@@ -4,6 +4,7 @@ from stock_entry_series.overrides.material_request import (
 	SERIES_MAP as MR_SERIES_MAP,
 	set_naming_series as set_mr_naming_series,
 )
+from stock_entry_series.overrides.material_request import get_series_for_type
 from stock_entry_series.overrides.stock_entry import DEFAULT_SERIES, set_naming_series
 
 
@@ -99,6 +100,21 @@ class TestMaterialRequestSeries(IntegrationTestCase):
 		doc.material_request_type = "Purchase"
 		set_mr_naming_series(doc)
 		self.assertEqual(doc.naming_series, MR_SERIES_MAP["Purchase"])
+
+	def test_naming_series_map_row_wins_over_code_map(self):
+		frappe.get_doc({
+			"doctype": "Naming Series Map",
+			"document_type": "Material Request",
+			"type_value": "_Test MR Type",
+			"naming_series": "MAPTEST-.YY.-.###",
+		}).insert(ignore_permissions=True)
+
+		self.assertEqual(get_series_for_type("_Test MR Type"), "MAPTEST-.YY.-.###")
+
+		doc = frappe.new_doc("Material Request")
+		doc.material_request_type = "_Test MR Type"
+		set_mr_naming_series(doc)
+		self.assertEqual(doc.naming_series, "MAPTEST-.YY.-.###")
 
 	def test_series_not_overridden_when_explicit(self):
 		doc = frappe.new_doc("Material Request")

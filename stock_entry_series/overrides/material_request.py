@@ -2,9 +2,8 @@ import frappe
 
 DEFAULT_SERIES = "MAT-MR-.YYYY.-"
 
-# material_request_type is a fixed Select field (no master doctype), so the
-# per-type series lives here instead of on a master document. To change a
-# series, edit this map and restart the containers.
+# Code-level fallback when no row exists in the "Naming Series Map" doctype
+# (which is the UI-editable source of truth seeded by after_migrate).
 SERIES_MAP = {
 	"Purchase": "MREQ-PUR-.YY.-.####",
 	"Material Transfer": "MREQ-MTR-.YY.-.####",
@@ -15,10 +14,16 @@ SERIES_MAP = {
 }
 
 
-@frappe.whitelist()
-def get_naming_series(material_request_type):
-	"""Single source of truth for the client script."""
-	return SERIES_MAP.get(material_request_type, DEFAULT_SERIES)
+def get_series_for_type(material_request_type):
+	"""UI map first, code map second, generic default last."""
+	series = None
+	if frappe.db.table_exists("Naming Series Map"):
+		series = frappe.db.get_value(
+			"Naming Series Map",
+			{"document_type": "Material Request", "type_value": material_request_type},
+			"naming_series",
+		)
+	return series or SERIES_MAP.get(material_request_type, DEFAULT_SERIES)
 
 
 def set_naming_series(doc, method=None):
@@ -30,7 +35,7 @@ def set_naming_series(doc, method=None):
 	if not doc.material_request_type:
 		return
 
-	target_series = SERIES_MAP.get(doc.material_request_type, DEFAULT_SERIES)
+	target_series = get_series_for_type(doc.material_request_type)
 
 	# Only override when the series is empty or still the generic default;
 	# an explicitly chosen series is respected.

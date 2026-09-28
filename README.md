@@ -3,7 +3,7 @@
 Custom Frappe app for ERPNext with dynamic document naming series:
 
 - **Stock Entry** — series configured per **Stock Entry Type** (field *Naming Series* on each Stock Entry Type).
-- **Material Request** — series configured per **Material Request Type** via the `SERIES_MAP` in `stock_entry_series/overrides/material_request.py` (the type is a fixed Select field with no master doctype).
+- **Material Request** — series configured per **Material Request Type** via the **Naming Series Map** doctype (Desk UI, seeded with defaults on migrate).
 
 ## Features
 - **No Hardcoded Client Scripts**: picking a type auto-fills the matching series on the form.
