@@ -102,17 +102,25 @@ class TestMaterialRequestSeries(IntegrationTestCase):
 		self.assertEqual(doc.naming_series, MR_SERIES_MAP["Purchase"])
 
 	def test_naming_series_map_row_wins_over_code_map(self):
-		frappe.get_doc({
-			"doctype": "Naming Series Map",
-			"document_type": "Material Request",
-			"type_value": "_Test MR Type",
-			"naming_series": "MAPTEST-.YY.-.###",
-		}).insert(ignore_permissions=True)
+		# simulate an admin editing a row via the UI (db.set_value bypasses the
+		# Select validation; changes roll back with the test transaction)
+		row = frappe.db.get_value(
+			"Naming Series Map", {"document_type": "Material Request", "type_value": "Manufacture"}
+		)
+		if row:
+			frappe.db.set_value("Naming Series Map", row, "naming_series", "MAPTEST-.YY.-.###")
+		else:
+			frappe.get_doc({
+				"doctype": "Naming Series Map",
+				"document_type": "Material Request",
+				"type_value": "Manufacture",
+				"naming_series": "MAPTEST-.YY.-.###",
+			}).insert(ignore_permissions=True)
 
-		self.assertEqual(get_series_for_type("_Test MR Type"), "MAPTEST-.YY.-.###")
+		self.assertEqual(get_series_for_type("Manufacture"), "MAPTEST-.YY.-.###")
 
 		doc = frappe.new_doc("Material Request")
-		doc.material_request_type = "_Test MR Type"
+		doc.material_request_type = "Manufacture"
 		set_mr_naming_series(doc)
 		self.assertEqual(doc.naming_series, "MAPTEST-.YY.-.###")
 

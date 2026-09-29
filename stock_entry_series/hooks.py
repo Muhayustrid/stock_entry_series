@@ -35,3 +35,10 @@ after_migrate = [
 	"stock_entry_series.patches.v1_0.seed_stock_entry_series.execute",
 	"stock_entry_series.patches.v1_0.ensure_naming_series_map.execute",
 ]
+
+# install-app on Frappe Cloud does not run migrate; seed right after the
+# app's doctypes and fixtures are synced instead.
+after_sync = [
+	"stock_entry_series.patches.v1_0.seed_stock_entry_series.execute",
+	"stock_entry_series.patches.v1_0.ensure_naming_series_map.execute",
+]
